@@ -1,0 +1,775 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reports - MikiClock</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com?plugins=forms,typography"></script>
+    <!-- Font Awesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Chart.js -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
+    <!-- SweetAlert -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    
+    <script type="text/javascript">
+        window.tailwind.config = {
+            darkMode: ['class'],
+            theme: {
+                extend: {
+                    colors: {
+                        border: 'hsl(var(--border))',
+                        input: 'hsl(var(--input))',
+                        ring: 'hsl(var(--ring))',
+                        background: 'hsl(var(--background))',
+                        foreground: 'hsl(var(--foreground))',
+                        primary: {
+                            DEFAULT: 'hsl(var(--primary))',
+                            foreground: 'hsl(var(--primary-foreground))'
+                        },
+                        secondary: {
+                            DEFAULT: 'hsl(var(--secondary))',
+                            foreground: 'hsl(var(--secondary-foreground))'
+                        },
+                        destructive: {
+                            DEFAULT: 'hsl(var(--destructive))',
+                            foreground: 'hsl(var(--destructive-foreground))'
+                        },
+                        muted: {
+                            DEFAULT: 'hsl(var(--muted))',
+                            foreground: 'hsl(var(--muted-foreground))'
+                        },
+                        accent: {
+                            DEFAULT: 'hsl(var(--accent))',
+                            foreground: 'hsl(var(--accent-foreground))'
+                        },
+                        popover: {
+                            DEFAULT: 'hsl(var(--popover))',
+                            foreground: 'hsl(var(--popover-foreground))'
+                        },
+                        card: {
+                            DEFAULT: 'hsl(var(--card))',
+                            foreground: 'hsl(var(--card-foreground))'
+                        },
+                    },
+                }
+            }
+        }
+    </script>
+    <style type="text/tailwindcss">
+        @layer base {
+            :root {
+                --background: 0 0% 100%;
+                --foreground: 224 71.4% 4.1%;
+                --card: 0 0% 100%;
+                --card-foreground: 224 71.4% 4.1%;
+                --popover: 0 0% 100%;
+                --popover-foreground: 224 71.4% 4.1%;
+                --primary: 220.9 39.3% 11%;
+                --primary-foreground: 210 20% 98%;
+                --secondary: 220 14.3% 95.9%;
+                --secondary-foreground: 220.9 39.3% 11%;
+                --muted: 220 14.3% 95.9%;
+                --muted-foreground: 220 8.9% 46.1%;
+                --accent: 220 14.3% 95.9%;
+                --accent-foreground: 220.9 39.3% 11%;
+                --destructive: 0 84.2% 60.2%;
+                --destructive-foreground: 210 20% 98%;
+                --border: 220 13% 91%;
+                --input: 220 13% 91%;
+                --ring: 224 71.4% 4.1%;
+                --radius: 0.35rem;
+            }
+            .dark {
+                --background: 224 71.4% 4.1%;
+                --foreground: 210 20% 98%;
+                --card: 224 71.4% 4.1%;
+                --card-foreground: 210 20% 98%;
+                --popover: 224 71.4% 4.1%;
+                --popover-foreground: 210 20% 98%;
+                --primary: 210 20% 98%;
+                --primary-foreground: 220.9 39.3% 11%;
+                --secondary: 215 27.9% 16.9%;
+                --secondary-foreground: 210 20% 98%;
+                --muted: 215 27.9% 16.9%;
+                --muted-foreground: 217.9 10.6% 64.9%;
+                --accent: 215 27.9% 16.9%;
+                --accent-foreground: 210 20% 98%;
+                --destructive: 0 62.8% 30.6%;
+                --destructive-foreground: 210 20% 98%;
+                --border: 215 27.9% 16.9%;
+                --input: 215 27.9% 16.9%;
+                --ring: 216 12.2% 83.9%;
+            }
+        }
+    </style>
+</head>
+<body class="bg-gray-100">
+    <div class="flex flex-col md:flex-row min-h-screen">
+        <!-- Sidebar - Hidden on mobile, shown on tablet/desktop -->
+        <div class="bg-blue-900 text-white w-full md:w-64 md:flex-shrink-0 md:block hidden" id="sidebar">
+            <div class="p-4">
+                <h2 class="text-2xl font-bold mb-8">MikiClock</h2>
+                <nav>
+                    <ul>
+                        <li class="mb-2">
+                            <a href="dashboard.html" class="flex items-center p-3 rounded-md hover:bg-blue-700">
+                                <i class="fas fa-tachometer-alt mr-3"></i>
+                                <span>Dashboard</span>
+                            </a>
+                        </li>
+                       
+                        <li class="mb-2">
+                            <a href="timehistory.html" class="flex items-center p-3 rounded-md hover:bg-blue-700">
+                                <i class="fas fa-history mr-3"></i>
+                                <span>Time History</span>
+                            </a>
+                        </li>
+                        <li class="mb-2">
+                            <a href="#" class="flex items-center p-3 rounded-md bg-blue-800 hover:bg-blue-700">
+                                <i class="fas fa-chart-bar mr-3"></i>
+                                <span>Reports</span>
+                            </a>
+                        </li>
+                        <li class="mb-2">
+                            <a href="#" class="flex items-center p-3 rounded-md hover:bg-blue-700">
+                                <i class="fas fa-cog mr-3"></i>
+                                <span>Settings</span>
+                            </a>
+                        </li>
+                    </ul>
+                </nav>
+            </div>
+            <div class="mt-auto p-4 border-t border-blue-800">
+                <a href="form.html" id="logout-link" class="flex items-center p-2 rounded-md hover:bg-blue-700">
+                    <i class="fas fa-sign-out-alt mr-3"></i>
+                    <span>Logout</span>
+                </a>
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <div class="flex-1">
+            <!-- Mobile Top Bar -->
+            <div class="bg-blue-900 text-white p-4 flex justify-between items-center md:hidden">
+                <h2 class="text-xl font-bold">MikiClock</h2>
+                <button id="menuToggle" class="text-white focus:outline-none">
+                    <i class="fas fa-bars"></i>
+                </button>
+            </div>
+
+            <!-- Mobile Sidebar (Hidden by default) -->
+            <div class="bg-blue-900 text-white w-full hidden" id="mobileSidebar">
+                <div class="p-4">
+                    <nav>
+                        <ul>
+                            <li class="mb-2">
+                                <a href="dashboard.html" class="flex items-center p-3 rounded-md hover:bg-blue-700">
+                                    <i class="fas fa-tachometer-alt mr-3"></i>
+                                    <span>Dashboard</span>
+                                </a>
+                            </li>
+                          
+                            <li class="mb-2">
+                                <a href="timehistory.html" class="flex items-center p-3 rounded-md hover:bg-blue-700">
+                                    <i class="fas fa-history mr-3"></i>
+                                    <span>Time History</span>
+                                </a>
+                            </li>
+                            <li class="mb-2">
+                                <a href="#" class="flex items-center p-3 rounded-md bg-blue-800 hover:bg-blue-700">
+                                    <i class="fas fa-chart-bar mr-3"></i>
+                                    <span>Reports</span>
+                                </a>
+                            </li>
+                            <li class="mb-2">
+                                <a href="#" class="flex items-center p-3 rounded-md hover:bg-blue-700">
+                                    <i class="fas fa-cog mr-3"></i>
+                                    <span>Settings</span>
+                                </a>
+                            </li>
+                            <li class="mb-2">
+                                <a href="form.html" id="mobile-logout-link" class="flex items-center p-3 rounded-md hover:bg-blue-700">
+                                    <i class="fas fa-sign-out-alt mr-3"></i>
+                                    <span>Logout</span>
+                                </a>
+                            </li>
+                        </ul>
+                    </nav>
+                </div>
+            </div>
+
+            <!-- Content Area -->
+            <div class="p-4 md:p-8">
+                <!-- Header with Current Time -->
+                <div class="flex justify-between items-center mb-6">
+                    <h1 class="text-2xl font-bold text-gray-800">Reports</h1>
+                    <div class="text-lg font-semibold" id="currentTime">
+                        <span id="currentDate"></span> | <span id="clock"></span>
+                    </div>
+                </div>
+
+                <!-- Report Filters -->
+                <div class="bg-white rounded-lg shadow-md p-4 mb-6">
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                        <div>
+                            <label for="reportType" class="block text-sm font-medium text-gray-700 mb-1">Report Type</label>
+                            <select id="reportType" class="w-full border-gray-300 rounded-md shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200 focus:ring-opacity-50">
+                                <option value="weekly">Weekly Hours</option>
+                                <option value="monthly">Monthly Summary</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label for="dateRange" class="block text-sm font-medium text-gray-700 mb-1">Time Period</label>
+                            <select id="dateRange" class="w-full border-gray-300 rounded-md shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200 focus:ring-opacity-50">
+                                <option value="current">Current Week/Month</option>
+                                <option value="previous">Previous Week/Month</option>
+                                <option value="custom">Custom Range</option>
+                            </select>
+                        </div>
+                        <div class="flex items-end">
+                            <button id="generateReportBtn" class="bg-blue-900 text-white py-2 px-4 rounded-md hover:bg-blue-800 transition duration-300 w-full">
+                                Generate Report
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <!-- Custom Date Range (Hidden by default) -->
+                    <div id="customDateContainer" class="hidden mt-4 grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                            <label for="startDate" class="block text-sm font-medium text-gray-700 mb-1">Start Date</label>
+                            <input type="date" id="startDate" class="w-full border-gray-300 rounded-md shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200 focus:ring-opacity-50">
+                        </div>
+                        <div>
+                            <label for="endDate" class="block text-sm font-medium text-gray-700 mb-1">End Date</label>
+                            <input type="date" id="endDate" class="w-full border-gray-300 rounded-md shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200 focus:ring-opacity-50">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Report Summary Card -->
+                <div class="bg-white rounded-lg shadow-md p-6 mb-6">
+                    <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-4">
+                        <h2 class="text-xl font-bold" id="reportTitle">Weekly Hours Report</h2>
+                        <p class="text-gray-600" id="reportPeriod">May 08 - May 14, 2025</p>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
+                        <div class="border rounded-lg p-4 bg-blue-50">
+                            <p class="text-gray-600 mb-1">Total Hours</p>
+                            <p class="text-2xl font-bold text-blue-800" id="totalHours">38h 45m</p>
+                        </div>
+                        <div class="border rounded-lg p-4 bg-green-50">
+                            <p class="text-gray-600 mb-1">Average Daily Hours</p>
+                            <p class="text-2xl font-bold text-green-800" id="avgHours">7h 45m</p>
+                        </div>
+                        <div class="border rounded-lg p-4 bg-purple-50">
+                            <p class="text-gray-600 mb-1">Clock-In Rate</p>
+                            <p class="text-2xl font-bold text-purple-800" id="attendanceRate">100%</p>
+                        </div>
+                    </div>
+
+                    <!-- Chart Area -->
+                    <div class="mb-6">
+                        <canvas id="timeChart" height="250"></canvas>
+                    </div>
+
+                    <!-- Weekly Summary Table -->
+                    <div class="overflow-x-auto" id="summaryTableContainer">
+                        <table class="min-w-full bg-white">
+                            <thead>
+                                <tr class="bg-gray-100 text-gray-600 text-left">
+                                    <th class="py-3 px-4 font-semibold">Date</th>
+                                    <th class="py-3 px-4 font-semibold">Day</th>
+                                    <th class="py-3 px-4 font-semibold">Clock In</th>
+                                    <th class="py-3 px-4 font-semibold">Clock Out</th>
+                                    <th class="py-3 px-4 font-semibold">Total Hours</th>
+                                </tr>
+                            </thead>
+                            <tbody id="summaryTableBody">
+                                <!-- Table data will be populated by JavaScript -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Check if user is logged in
+            const loggedInUser = sessionStorage.getItem('loggedInUser');
+            if (!loggedInUser) {
+                window.location.href = 'form.html';
+                return;
+            }
+            
+            // Mobile menu toggle
+            document.getElementById('menuToggle').addEventListener('click', function() {
+                const mobileSidebar = document.getElementById('mobileSidebar');
+                mobileSidebar.classList.toggle('hidden');
+            });
+            
+            // Display current time and date
+            function updateClock() {
+                const now = new Date();
+                const dateOptions = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+                const timeOptions = { hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: true };
+                        
+                document.getElementById('currentDate').textContent = now.toLocaleDateString('en-US', dateOptions);
+                document.getElementById('clock').textContent = now.toLocaleTimeString('en-US', timeOptions);
+            }
+            
+            // Update clock every second
+            updateClock();
+            setInterval(updateClock, 1000);
+            
+            // Report Type and Date Range event listeners
+            document.getElementById('dateRange').addEventListener('change', function() {
+                const customDateContainer = document.getElementById('customDateContainer');
+                if (this.value === 'custom') {
+                    customDateContainer.classList.remove('hidden');
+                } else {
+                    customDateContainer.classList.add('hidden');
+                }
+            });
+            
+            // Initialize date inputs with current week
+            const today = new Date();
+            const startOfWeek = new Date(today);
+            startOfWeek.setDate(today.getDate() - today.getDay());
+            
+            const endOfWeek = new Date(today);
+            endOfWeek.setDate(startOfWeek.getDate() + 6);
+            
+            document.getElementById('startDate').valueAsDate = startOfWeek;
+            document.getElementById('endDate').valueAsDate = endOfWeek;
+            
+            // Format date for display
+            function formatDate(date) {
+                return date.toLocaleDateString('en-US', { 
+                    year: 'numeric', 
+                    month: 'short', 
+                    day: 'numeric' 
+                });
+            }
+            
+            // Get all clock records from localStorage
+            function getClockRecords() {
+                return JSON.parse(localStorage.getItem('clockRecords')) || [];
+            }
+            
+            // Filter records based on date range and user
+            function filterRecords(startDate, endDate) {
+                const userData = getUserData();
+                const records = getClockRecords();
+                
+                return records.filter(record => {
+                    const recordDate = new Date(record.date);
+                    return (
+                        record.employeeId === userData.id && 
+                        recordDate >= startDate && 
+                        recordDate <= endDate
+                    );
+                });
+            }
+            
+            // Calculate duration between two times
+            function calculateDuration(startTime, endTime) {
+                if (!startTime || !endTime) return null;
+                
+                const start = new Date(startTime);
+                const end = new Date(endTime);
+                const diffMs = end - start;
+                
+                // Return milliseconds for calculation purposes
+                return diffMs;
+            }
+            
+            // Format milliseconds as hours and minutes
+            function formatDuration(ms) {
+                if (ms === null) return '--';
+                
+                const hours = Math.floor(ms / (1000 * 60 * 60));
+                const minutes = Math.floor((ms % (1000 * 60 * 60)) / (1000 * 60));
+                
+                return `${hours}h ${minutes}m`;
+            }
+            
+            // Get user data from session storage or localStorage
+            function getUserData() {
+                const loggedInUser = sessionStorage.getItem('loggedInUser');
+                const users = JSON.parse(localStorage.getItem('users')) || [];
+                const currentUser = users.find(user => user.name === loggedInUser);
+                
+                if (currentUser) {
+                    return {
+                        name: currentUser.name,
+                        id: currentUser.employeeId,
+                        department: currentUser.role || "Not Specified",
+                        position: currentUser.role || "Employee"
+                    };
+                } else {
+                    return {
+                        name: loggedInUser,
+                        id: "EMP001",
+                        department: sessionStorage.getItem('userRole') || "Not Specified",
+                        position: sessionStorage.getItem('userRole') || "Employee"
+                    };
+                }
+            }
+            
+            // Format time for display (12-hour format)
+            function formatTime(date) {
+                if (!date) return '--:-- --';
+                
+                const hours = date.getHours();
+                const minutes = date.getMinutes();
+                const ampm = hours >= 12 ? 'PM' : 'AM';
+                const formattedHours = hours % 12 || 12;
+                const formattedMinutes = minutes < 10 ? '0' + minutes : minutes;
+                
+                return `${formattedHours}:${formattedMinutes} ${ampm}`;
+            }
+            
+            // Generate Report
+            let timeChart = null; // Store chart instance to destroy old instances
+            
+            document.getElementById('generateReportBtn').addEventListener('click', function() {
+                const reportType = document.getElementById('reportType').value;
+                const dateRangeType = document.getElementById('dateRange').value;
+                
+                let startDate, endDate;
+                
+                const today = new Date();
+                
+                if (dateRangeType === 'custom') {
+                    startDate = new Date(document.getElementById('startDate').value);
+                    endDate = new Date(document.getElementById('endDate').value);
+                    // Set to end of day
+                    endDate.setHours(23, 59, 59, 999);
+                } else if (dateRangeType === 'previous') {
+                    if (reportType === 'weekly') {
+                        // Previous week
+                        const startOfLastWeek = new Date(today);
+                        startOfLastWeek.setDate(today.getDate() - today.getDay() - 7);
+                        startDate = startOfLastWeek;
+                        
+                        const endOfLastWeek = new Date(startOfLastWeek);
+                        endOfLastWeek.setDate(startOfLastWeek.getDate() + 6);
+                        endOfLastWeek.setHours(23, 59, 59, 999);
+                        endDate = endOfLastWeek;
+                    } else { // monthly
+                        // Previous month
+                        const startOfLastMonth = new Date(today.getFullYear(), today.getMonth() - 1, 1);
+                        startDate = startOfLastMonth;
+                        
+                        const endOfLastMonth = new Date(today.getFullYear(), today.getMonth(), 0);
+                        endOfLastMonth.setHours(23, 59, 59, 999);
+                        endDate = endOfLastMonth;
+                    }
+                } else { // current
+                    if (reportType === 'weekly') {
+                        // Current week
+                        const startOfWeek = new Date(today);
+                        startOfWeek.setDate(today.getDate() - today.getDay());
+                        startDate = startOfWeek;
+                        
+                        const endOfWeek = new Date(startOfWeek);
+                        endOfWeek.setDate(startOfWeek.getDate() + 6);
+                        endOfWeek.setHours(23, 59, 59, 999);
+                        endDate = endOfWeek;
+                    } else { // monthly
+                        // Current month
+                        const startOfMonth = new Date(today.getFullYear(), today.getMonth(), 1);
+                        startDate = startOfMonth;
+                        
+                        const endOfMonth = new Date(today.getFullYear(), today.getMonth() + 1, 0);
+                        endOfMonth.setHours(23, 59, 59, 999);
+                        endDate = endOfMonth;
+                    }
+                }
+                
+                // Update report title and period
+                const reportTitle = document.getElementById('reportTitle');
+                const reportPeriod = document.getElementById('reportPeriod');
+                
+                reportTitle.textContent = reportType === 'weekly' ? 'Weekly Hours Report' : 'Monthly Summary Report';
+                reportPeriod.textContent = `${formatDate(startDate)} - ${formatDate(endDate)}`;
+                
+                // Get filtered records
+                const records = filterRecords(startDate, endDate);
+                
+                // Calculate summary stats
+                let totalMs = 0;
+                let completedDays = 0;
+                
+                records.forEach(record => {
+                    if (record.clockOut) {
+                        const duration = calculateDuration(record.clockIn, record.clockOut);
+                        if (duration) {
+                            totalMs += duration;
+                            completedDays++;
+                        }
+                    }
+                });
+                
+                // Update summary cards
+                document.getElementById('totalHours').textContent = formatDuration(totalMs);
+                
+                // Calculate average daily hours
+                const avgDailyMs = completedDays > 0 ? totalMs / completedDays : 0;
+                document.getElementById('avgHours').textContent = formatDuration(avgDailyMs);
+                
+                // Calculate attendance rate
+                const totalDays = reportType === 'weekly' ? 5 : getWeekdaysInMonth(startDate); // Assume 5-day work week
+                const attendanceRate = totalDays > 0 ? Math.round((completedDays / totalDays) * 100) : 0;
+                document.getElementById('attendanceRate').textContent = `${attendanceRate}%`;
+                
+                // Generate and populate summary table
+                populateSummaryTable(records, startDate, endDate, reportType);
+                
+                // Generate chart
+                generateChart(records, startDate, endDate, reportType);
+            });
+            
+            // Helper function to get working days in a month (weekdays)
+            function getWeekdaysInMonth(startDate) {
+                const year = startDate.getFullYear();
+                const month = startDate.getMonth();
+                const lastDay = new Date(year, month + 1, 0).getDate();
+                
+                let weekdays = 0;
+                for (let day = 1; day <= lastDay; day++) {
+                    const date = new Date(year, month, day);
+                    const dayOfWeek = date.getDay();
+                    // Count Monday through Friday (1-5)
+                    if (dayOfWeek > 0 && dayOfWeek < 6) {
+                        weekdays++;
+                    }
+                }
+                
+                return weekdays;
+            }
+            
+            // Populate summary table
+            function populateSummaryTable(records, startDate, endDate, reportType) {
+                const tableBody = document.getElementById('summaryTableBody');
+                tableBody.innerHTML = '';
+                
+                if (reportType === 'weekly') {
+                    // Populate day by day for weekly report
+                    const days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+                    
+                    for (let i = 0; i < 7; i++) {
+                        const currentDate = new Date(startDate);
+                        currentDate.setDate(startDate.getDate() + i);
+                        
+                        // Format date string for comparison
+                        const dateString = currentDate.toISOString().split('T')[0];
+                        
+                        // Find record for this day
+                        const dayRecord = records.find(record => record.date === dateString);
+                        
+                        const row = document.createElement('tr');
+                        row.className = 'border-b';
+                        
+                        const clockInTime = dayRecord ? formatTime(new Date(dayRecord.clockIn)) : '--:-- --';
+                        const clockOutTime = dayRecord && dayRecord.clockOut ? formatTime(new Date(dayRecord.clockOut)) : '--:-- --';
+                        const totalHours = dayRecord && dayRecord.clockOut ? 
+                            formatDuration(calculateDuration(dayRecord.clockIn, dayRecord.clockOut)) : 
+                            '--';
+                        
+                        row.innerHTML = `
+                            <td class="py-3 px-4">${formatDate(currentDate)}</td>
+                            <td class="py-3 px-4">${days[currentDate.getDay()]}</td>
+                            <td class="py-3 px-4">${clockInTime}</td>
+                            <td class="py-3 px-4">${clockOutTime}</td>
+                            <td class="py-3 px-4">${totalHours}</td>
+                        `;
+                        
+                        tableBody.appendChild(row);
+                    }
+                } else {
+                    // For monthly report, show only days with records
+                    records.sort((a, b) => new Date(a.date) - new Date(b.date));
+                    
+                    if (records.length === 0) {
+                        const row = document.createElement('tr');
+                        row.innerHTML = `
+                            <td colspan="5" class="py-4 px-4 text-center text-gray-500">No clock records found for this period</td>
+                        `;
+                        tableBody.appendChild(row);
+                    } else {
+                        records.forEach(record => {
+                            const recordDate = new Date(record.date);
+                            const days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+                            
+                            const row = document.createElement('tr');
+                            row.className = 'border-b';
+                            
+                            const clockInTime = formatTime(new Date(record.clockIn));
+                            const clockOutTime = record.clockOut ? formatTime(new Date(record.clockOut)) : '--:-- --';
+                            const totalHours = record.clockOut ? 
+                                formatDuration(calculateDuration(record.clockIn, record.clockOut)) : 
+                                '--';
+                            
+                            row.innerHTML = `
+                                <td class="py-3 px-4">${formatDate(recordDate)}</td>
+                                <td class="py-3 px-4">${days[recordDate.getDay()]}</td>
+                                <td class="py-3 px-4">${clockInTime}</td>
+                                <td class="py-3 px-4">${clockOutTime}</td>
+                                <td class="py-3 px-4">${totalHours}</td>
+                            `;
+                            
+                            tableBody.appendChild(row);
+                        });
+                    }
+                }
+            }
+            
+            // Generate chart based on data
+            function generateChart(records, startDate, endDate, reportType) {
+                const ctx = document.getElementById('timeChart').getContext('2d');
+                
+                // Destroy previous chart instance if it exists
+                if (timeChart) {
+                    timeChart.destroy();
+                }
+                
+                // Prepare data for the chart
+                let labels = [];
+                let data = [];
+                let backgroundColors = [];
+                
+                if (reportType === 'weekly') {
+                    // Weekly chart - show each day of the week
+                    const days = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+                    
+                    for (let i = 0; i < 7; i++) {
+                        const currentDate = new Date(startDate);
+                        currentDate.setDate(startDate.getDate() + i);
+                        
+                        // Format date string for comparison
+                        const dateString = currentDate.toISOString().split('T')[0];
+                        
+                        // Find record for this day
+                        const dayRecord = records.find(record => record.date === dateString);
+                        
+                        labels.push(days[currentDate.getDay()]);
+                        
+                        if (dayRecord && dayRecord.clockOut) {
+                            const duration = calculateDuration(dayRecord.clockIn, dayRecord.clockOut);
+                            // Convert milliseconds to hours for the chart
+                            const hours = duration / (1000 * 60 * 60);
+                            data.push(hours);
+                            backgroundColors.push(hours >= 8 ? 'rgba(75, 192, 192, 0.6)' : 'rgba(255, 99, 132, 0.6)');
+                        } else {
+                            data.push(0);
+                            backgroundColors.push('rgba(201, 203, 207, 0.6)');
+                        }
+                    }
+                } else {
+                    // Monthly chart - show each week
+                    const currentDate = new Date(startDate);
+                    const endDateObj = new Date(endDate);
+                    
+                    while (currentDate <= endDateObj) {
+                        const weekStart = new Date(currentDate);
+                        const weekEnd = new Date(currentDate);
+                        weekEnd.setDate(weekStart.getDate() + 6);
+                        
+                        if (weekEnd > endDateObj) {
+                            weekEnd = new Date(endDateObj);
+                        }
+                        
+                        // Get records for this week
+                        const weekRecords = records.filter(record => {
+                            const recordDate = new Date(record.date);
+                            return recordDate >= weekStart && recordDate <= weekEnd;
+                        });
+                        
+                        // Calculate total hours for the week
+                        let weekHours = 0;
+                        weekRecords.forEach(record => {
+                            if (record.clockOut) {
+                                const duration = calculateDuration(record.clockIn, record.clockOut);
+                                weekHours += duration / (1000 * 60 * 60); // Convert to hours
+                            }
+                        });
+                        
+                        labels.push(`Week ${Math.floor((currentDate.getDate() - 1) / 7) + 1}`);
+                        data.push(weekHours);
+                        backgroundColors.push(weekHours >= 40 ? 'rgba(75, 192, 192, 0.6)' : 'rgba(255, 99, 132, 0.6)');
+                        
+                        // Move to next week
+                        currentDate.setDate(currentDate.getDate() + 7);
+                    }
+                }
+                
+                // Create new chart
+                timeChart = new Chart(ctx, {
+                    type: 'bar',
+                    data: {
+                        labels: labels,
+                        datasets: [{
+                            label: reportType === 'weekly' ? 'Daily Hours' : 'Weekly Hours',
+                            data: data,
+                            backgroundColor: backgroundColors,
+                            borderColor: backgroundColors.map(color => color.replace('0.6', '1')),
+                            borderWidth: 1
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        scales: {
+                            y: {
+                                beginAtZero: true,
+                                title: {
+                                    display: true,
+                                    text: 'Hours'
+                                }
+                            },
+                            x: {
+                                title: {
+                                    display: true,
+                                    text: reportType === 'weekly' ? 'Day of Week' : 'Week of Month'
+                                }
+                            }
+                        },
+                        plugins: {
+                            tooltip: {
+                                callbacks: {
+                                    label: function(context) {
+                                        const value = context.raw;
+                                        return `${value.toFixed(1)} hours`;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                });
+            }
+            
+            // Logout functionality
+            document.getElementById('logout-link').addEventListener('click', function(e) {
+                e.preventDefault();
+                sessionStorage.removeItem('loggedInUser');
+                window.location.href = 'form.html';
+            });
+            
+            document.getElementById('mobile-logout-link').addEventListener('click', function(e) {
+                e.preventDefault();
+                sessionStorage.removeItem('loggedInUser');
+                window.location.href = 'form.html';
+            });
+            
+            // Generate initial report on page load
+            document.getElementById('generateReportBtn').click();
+        });
+    </script>
+</body>
+</html>
