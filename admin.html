@@ -1,0 +1,1380 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MikiClock Admin Dashboard</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com?plugins=forms,typography"></script>
+    <!-- Font Awesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- SweetAlert -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <!-- Chart.js for graphs -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
+    
+    <script type="text/javascript">
+        window.tailwind.config = {
+            darkMode: ['class'],
+            theme: {
+                extend: {
+                    colors: {
+                        border: 'hsl(var(--border))',
+                        input: 'hsl(var(--input))',
+                        ring: 'hsl(var(--ring))',
+                        background: 'hsl(var(--background))',
+                        foreground: 'hsl(var(--foreground))',
+                        primary: {
+                            DEFAULT: 'hsl(var(--primary))',
+                            foreground: 'hsl(var(--primary-foreground))'
+                        },
+                        secondary: {
+                            DEFAULT: 'hsl(var(--secondary))',
+                            foreground: 'hsl(var(--secondary-foreground))'
+                        },
+                        destructive: {
+                            DEFAULT: 'hsl(var(--destructive))',
+                            foreground: 'hsl(var(--destructive-foreground))'
+                        },
+                        muted: {
+                            DEFAULT: 'hsl(var(--muted))',
+                            foreground: 'hsl(var(--muted-foreground))'
+                        },
+                        accent: {
+                            DEFAULT: 'hsl(var(--accent))',
+                            foreground: 'hsl(var(--accent-foreground))'
+                        },
+                        popover: {
+                            DEFAULT: 'hsl(var(--popover))',
+                            foreground: 'hsl(var(--popover-foreground))'
+                        },
+                        card: {
+                            DEFAULT: 'hsl(var(--card))',
+                            foreground: 'hsl(var(--card-foreground))'
+                        },
+                    },
+                }
+            }
+        }
+    </script>
+    <style type="text/tailwindcss">
+        @layer base {
+            :root {
+                --background: 0 0% 100%;
+                --foreground: 224 71.4% 4.1%;
+                --card: 0 0% 100%;
+                --card-foreground: 224 71.4% 4.1%;
+                --popover: 0 0% 100%;
+                --popover-foreground: 224 71.4% 4.1%;
+                --primary: 220.9 39.3% 11%;
+                --primary-foreground: 210 20% 98%;
+                --secondary: 220 14.3% 95.9%;
+                --secondary-foreground: 220.9 39.3% 11%;
+                --muted: 220 14.3% 95.9%;
+                --muted-foreground: 220 8.9% 46.1%;
+                --accent: 220 14.3% 95.9%;
+                --accent-foreground: 220.9 39.3% 11%;
+                --destructive: 0 84.2% 60.2%;
+                --destructive-foreground: 210 20% 98%;
+                --border: 220 13% 91%;
+                --input: 220 13% 91%;
+                --ring: 224 71.4% 4.1%;
+                --radius: 0.35rem;
+            }
+            .dark {
+                --background: 224 71.4% 4.1%;
+                --foreground: 210 20% 98%;
+                --card: 224 71.4% 4.1%;
+                --card-foreground: 210 20% 98%;
+                --popover: 224 71.4% 4.1%;
+                --popover-foreground: 210 20% 98%;
+                --primary: 210 20% 98%;
+                --primary-foreground: 220.9 39.3% 11%;
+                --secondary: 215 27.9% 16.9%;
+                --secondary-foreground: 210 20% 98%;
+                --muted: 215 27.9% 16.9%;
+                --muted-foreground: 217.9 10.6% 64.9%;
+                --accent: 215 27.9% 16.9%;
+                --accent-foreground: 210 20% 98%;
+                --destructive: 0 62.8% 30.6%;
+                --destructive-foreground: 210 20% 98%;
+                --border: 215 27.9% 16.9%;
+                --input: 215 27.9% 16.9%;
+                --ring: 216 12.2% 83.9%;
+            }
+        }
+    </style>
+</head>
+<body class="bg-gray-100">
+    <div class="flex flex-col md:flex-row min-h-screen" role="application">
+        <!-- Sidebar - Hidden on mobile, shown on tablet/desktop -->
+        <aside class="bg-blue-900 text-white w-full md:w-64 md:flex-shrink-0 md:block hidden" id="sidebar" role="navigation" aria-label="Main navigation">
+            <div class="p-4">
+                <h2 class="text-2xl font-bold mb-8" id="nav-title">MikiClock</h2>
+                <nav aria-labelledby="nav-title">
+                    <ul role="menu">
+                        <li class="mb-2" role="none">
+                            <a href="dashboard.html" class="flex items-center p-3 rounded-md hover:bg-blue-700" role="menuitem">
+                                <i class="fas fa-tachometer-alt mr-3" aria-hidden="true"></i>
+                                <span>Dashboard</span>
+                            </a>
+                        </li>
+                        <li class="mb-2" role="none">
+                            <a href="#" class="flex items-center p-3 rounded-md bg-blue-800 hover:bg-blue-700" role="menuitem" aria-current="page">
+                                <i class="fas fa-users-cog mr-3" aria-hidden="true"></i>
+                                <span>Admin Panel</span>
+                            </a>
+                        </li>
+                        <li class="mb-2">
+                            <a href="timehistory.html" class="flex items-center p-3 rounded-md hover:bg-blue-700">
+                                <i class="fas fa-history mr-3"></i>
+                                <span>Time History</span>
+                            </a>
+                        </li>
+                        
+                        <li class="mb-2">
+                            <a href="#" class="flex items-center p-3 rounded-md hover:bg-blue-700">
+                                <i class="fas fa-cog mr-3"></i>
+                                <span>Settings</span>
+                            </a>
+                        </li>
+                    </ul>
+                </nav>
+            </div>
+            <div class="mt-auto p-4 border-t border-blue-800">
+                <a href="form.html" id="logout-link" class="flex items-center p-2 rounded-md hover:bg-blue-700">
+                    <i class="fas fa-sign-out-alt mr-3"></i>
+                    <span>Logout</span>
+                </a>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="flex-1" role="main">
+            <!-- Mobile Top Bar -->
+            <header class="bg-blue-900 text-white p-4 flex justify-between items-center md:hidden" role="banner">
+                <h2 class="text-xl font-bold">MikiClock Admin</h2>
+                <button id="menuToggle" class="text-white focus:outline-none" aria-label="Toggle navigation menu" aria-expanded="false" aria-controls="mobileSidebar">
+                    <i class="fas fa-bars" aria-hidden="true"></i>
+                </button>
+            </header>
+
+            <!-- Mobile Sidebar (Hidden by default) -->
+            <nav class="bg-blue-900 text-white w-full hidden" id="mobileSidebar" role="navigation" aria-label="Mobile navigation">
+                <div class="p-4">
+                    <nav>
+                        <ul>
+                            <li class="mb-2">
+                                <a href="dashboard.html" class="flex items-center p-3 rounded-md hover:bg-blue-700">
+                                    <i class="fas fa-tachometer-alt mr-3"></i>
+                                    <span>Dashboard</span>
+                                </a>
+                            </li>
+                            <li class="mb-2">
+                                <a href="#" class="flex items-center p-3 rounded-md bg-blue-800 hover:bg-blue-700">
+                                    <i class="fas fa-users-cog mr-3"></i>
+                                    <span>Admin Panel</span>
+                                </a>
+                            </li>
+                            <li class="mb-2">
+                                <a href="timehistory.html" class="flex items-center p-3 rounded-md hover:bg-blue-700">
+                                    <i class="fas fa-history mr-3"></i>
+                                    <span>Time History</span>
+                                </a>
+                            </li>
+                          
+                            <li class="mb-2">
+                                <a href="#" class="flex items-center p-3 rounded-md hover:bg-blue-700">
+                                    <i class="fas fa-cog mr-3"></i>
+                                    <span>Settings</span>
+                                </a>
+                            </li>
+                            <li class="mb-2">
+                                <a href="#" id="mobile-logout-link" class="flex items-center p-3 rounded-md hover:bg-blue-700">
+                                    <i class="fas fa-sign-out-alt mr-3"></i>
+                                    <span>Logout</span>
+                                </a>
+                            </li>
+                        </ul>
+                    </nav>
+                </div>
+            </nav>
+
+            <!-- Content Area -->
+            <div class="p-4 md:p-8">
+                <!-- Header with Current Time -->
+                <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-6">
+                    <h1 class="text-2xl font-bold text-gray-800 mb-2 md:mb-0">Admin Dashboard</h1>
+                    <div class="text-lg font-semibold" id="currentTime" role="timer" aria-live="polite">
+                        <span id="currentDate"></span> | <span id="clock"></span>
+                    </div>
+                </div>
+
+                <!-- Admin Quick Stats -->
+                <section class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6" aria-label="Dashboard Statistics">
+                    <div class="bg-white rounded-lg shadow-md p-4" role="region" aria-label="Total Employees">
+                        <div class="flex items-center">
+                            <div class="bg-blue-100 rounded-full p-3 mr-4">
+                                <i class="fas fa-users text-blue-800 text-xl" aria-hidden="true"></i>
+                            </div>
+                            <div>
+                                <p class="text-gray-500 text-sm">Total Employees</p>
+                                <h3 class="text-xl font-bold" id="totalEmployees" aria-live="polite">0</h3>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="bg-white rounded-lg shadow-md p-4">
+                        <div class="flex items-center">
+                            <div class="bg-green-100 rounded-full p-3 mr-4">
+                                <i class="fas fa-user-check text-green-800 text-xl"></i>
+                            </div>
+                            <div>
+                                <p class="text-gray-500 text-sm">Currently Active</p>
+                                <h3 class="text-xl font-bold" id="activeEmployees">0</h3>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="bg-white rounded-lg shadow-md p-4">
+                        <div class="flex items-center">
+                            <div class="bg-yellow-100 rounded-full p-3 mr-4">
+                                <i class="fas fa-clock text-yellow-800 text-xl"></i>
+                            </div>
+                            <div>
+                                <p class="text-gray-500 text-sm">Today's Clock-ins</p>
+                                <h3 class="text-xl font-bold" id="todayClockIns">0</h3>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="bg-white rounded-lg shadow-md p-4">
+                        <div class="flex items-center">
+                            <div class="bg-red-100 rounded-full p-3 mr-4">
+                                <i class="fas fa-user-times text-red-800 text-xl"></i>
+                            </div>
+                            <div>
+                                <p class="text-gray-500 text-sm">Absence Today</p>
+                                <h3 class="text-xl font-bold" id="absentToday">0</h3>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Tabs for different admin sections -->
+                <div class="mb-6">
+                    <div class="border-b border-gray-200">
+                        <nav class="flex -mb-px" role="tablist" aria-label="Admin sections">
+                            <button class="tab-btn py-4 px-6 border-b-2 border-blue-500 text-blue-600 font-medium text-sm leading-5 focus:outline-none focus:border-blue-700 focus:text-blue-800" 
+                                    role="tab" 
+                                    aria-selected="true" 
+                                    aria-controls="live-activity" 
+                                    id="tab-live-activity"
+                                    data-tab="live-activity">
+                                Live Activity
+                            </button>
+                            <button class="tab-btn py-4 px-6 border-b-2 border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300 font-medium text-sm leading-5 focus:outline-none focus:text-gray-700 focus:border-gray-300" data-tab="employee-management">
+                                Employee Management
+                            </button>
+                            <button class="tab-btn py-4 px-6 border-b-2 border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300 font-medium text-sm leading-5 focus:outline-none focus:text-gray-700 focus:border-gray-300" data-tab="email-notifications">
+                                Email Notifications
+                            </button>
+                            <button class="tab-btn py-4 px-6 border-b-2 border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300 font-medium text-sm leading-5 focus:outline-none focus:text-gray-700 focus:border-gray-300" data-tab="analytics">
+                                Analytics
+                            </button>
+                        </nav>
+                    </div>
+                </div>
+                
+                <!-- Tab Content -->
+                <div class="tab-content" 
+                     id="live-activity" 
+                     role="tabpanel" 
+                     aria-labelledby="tab-live-activity">
+                    <div class="bg-white rounded-lg shadow-md p-6 mb-6">
+                        <div class="flex justify-between items-center mb-4">
+                            <h2 class="text-xl font-bold">Live Employee Activity</h2>
+                            <button id="refreshActivityBtn" class="bg-blue-100 text-blue-800 px-4 py-2 rounded-md hover:bg-blue-200 transition">
+                                <i class="fas fa-sync-alt mr-2"></i> Refresh
+                            </button>
+                        </div>
+                        
+                        <div class="overflow-x-auto">
+                            <table class="min-w-full bg-white" role="grid" aria-label="Employee activity">
+                                <thead>
+                                    <tr class="bg-gray-100 text-gray-600 text-left" role="row">
+                                        <th class="py-3 px-4 font-semibold" role="columnheader" scope="col">Employee</th>
+                                        <th class="py-3 px-4 font-semibold" role="columnheader" scope="col">ID</th>
+                                        <th class="py-3 px-4 font-semibold" role="columnheader" scope="col">Position</th>
+                                        <th class="py-3 px-4 font-semibold" role="columnheader" scope="col">Status</th>
+                                        <th class="py-3 px-4 font-semibold" role="columnheader" scope="col">Clock In</th>
+                                        <th class="py-3 px-4 font-semibold" role="columnheader" scope="col">Duration</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="liveActivityTable">
+                                    <!-- Will be populated by JavaScript -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="tab-content hidden" id="employee-management">
+                    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                        <!-- Employee List -->
+                        <div class="lg:col-span-2">
+                            <div class="bg-white rounded-lg shadow-md p-6 mb-6">
+                                <div class="flex justify-between items-center mb-4">
+                                    <h2 class="text-xl font-bold">Employee Directory</h2>
+                                    <div class="flex">
+                                        <div class="relative mr-2">
+                                            <input type="text" id="employeeSearch" placeholder="Search employees..." class="border border-gray-300 rounded-md px-4 py-2 pl-10 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                                            <div class="absolute left-3 top-2.5 text-gray-400">
+                                                <i class="fas fa-search"></i>
+                                            </div>
+                                        </div>
+                                       
+                                    </div>
+                                </div>
+                                
+                                <div class="overflow-x-auto">
+                                    <table class="min-w-full bg-white">
+                                        <thead>
+                                            <tr class="bg-gray-100 text-gray-600 text-left">
+                                                <th class="py-3 px-4 font-semibold">Name</th>
+                                                <th class="py-3 px-4 font-semibold">Employee ID</th>
+                                                <th class="py-3 px-4 font-semibold">Position</th>
+                                                <th class="py-3 px-4 font-semibold">Email</th>
+                                                <th class="py-3 px-4 font-semibold">Actions</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="employeeDirectoryTable">
+                                            <!-- Will be populated by JavaScript -->
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Employee quick edit -->
+                        <div class="lg:col-span-1">
+                            <div class="bg-white rounded-lg shadow-md p-6 mb-6" id="employeeEditPanel">
+                                <h2 class="text-xl font-bold mb-4">Edit Employee</h2>
+                                <p class="text-gray-500 mb-4">Select an employee from the list to edit their details.</p>
+                                
+                                <form id="employeeEditForm" class="hidden">
+                                    <input type="hidden" id="editEmployeeId">
+                                    
+                                    <div class="mb-4">
+                                        <label for="editName" class="block text-gray-700 text-sm font-bold mb-2">Name</label>
+                                        <input type="text" id="editName" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
+                                    </div>
+                                    
+                                    <div class="mb-4">
+                                        <label for="editEmployeeID" class="block text-gray-700 text-sm font-bold mb-2">Employee ID</label>
+                                        <input type="text" id="editEmployeeID" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
+                                    </div>
+                                    
+                                    <div class="mb-4">
+                                        <label for="editPosition" class="block text-gray-700 text-sm font-bold mb-2">Position</label>
+                                        <select id="editPosition" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
+                                            <option value="Manager">Manager</option>
+                                            <option value="Supervisor">Supervisor</option>
+                                            <option value="Employee">Employee</option>
+                                            <option value="Intern">Intern</option>
+                                            <option value="Admin">Admin</option>
+                                        </select>
+                                    </div>
+                                    
+                                    <div class="mb-4">
+                                        <label for="editEmail" class="block text-gray-700 text-sm font-bold mb-2">Email</label>
+                                        <input type="email" id="editEmail" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
+                                    </div>
+                                     <div class="mb-4">
+                                        <label for="editEmail" class="block text-gray-700 text-sm font-bold mb-2">Reset Password</label>
+                                        <input type="password" id="editPassword" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
+                                    </div>
+                                    <div class="flex justify-between">
+                                        <button onclick="saveEmployeeChanges()" type="submit" class="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 transition">
+                                            <i class="fas fa-save mr-2"></i> Save Changes
+                                        </button>
+                                        <button onclick="cancelEdit()" type="button" id="cancelEditBtn" class="bg-gray-300 text-gray-800 px-4 py-2 rounded-md hover:bg-gray-400 transition">
+                                            Cancel
+                                        </button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="tab-content hidden" id="email-notifications">
+                    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                        <!-- Email Compose -->
+                        <div class="lg:col-span-2">
+                            <div class="bg-white rounded-lg shadow-md p-6 mb-6">
+                                <h2 class="text-xl font-bold mb-4">Send Notification</h2>
+                                
+                                <form id="emailForm">
+                                    <div class="mb-4">
+                                        <label for="emailRecipient" class="block text-gray-700 text-sm font-bold mb-2">Recipient</label>
+                                        <select id="emailRecipient" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
+                                            <option value="all">All Employees</option>
+                                            <option value="active">Currently Active Employees</option>
+                                            <option value="inactive">Currently Inactive Employees</option>
+                                            <option value="custom">Select Specific Employees</option>
+                                        </select>
+                                    </div>
+                                    
+                                    <div id="customRecipientsDiv" class="mb-4 hidden">
+                                        <label class="block text-gray-700 text-sm font-bold mb-2">Select Employees</label>
+                                        <div id="customRecipientsList" class="max-h-40 overflow-y-auto border border-gray-300 rounded p-2">
+                                            <!-- Will be populated by JavaScript -->
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="mb-4">
+                                        <label for="emailSubject" class="block text-gray-700 text-sm font-bold mb-2">Subject</label>
+                                        <input type="text" id="emailSubject" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
+                                    </div>
+                                    
+                                    <div class="mb-4">
+                                        <label for="emailTemplate" class="block text-gray-700 text-sm font-bold mb-2">Template</label>
+                                        <select id="emailTemplate" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
+                                            <option value="custom">Custom Message</option>
+                                            <option value="reminder">Clock Reminder</option>
+                                            <option value="announcement">General Announcement</option>
+                                            <option value="schedule">Schedule Update</option>
+                                        </select>
+                                    </div>
+                                    
+                                    <div class="mb-4">
+                                        <label for="emailContent" class="block text-gray-700 text-sm font-bold mb-2">Message</label>
+                                        <textarea id="emailContent" rows="6" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"></textarea>
+                                    </div>
+                                    
+                                    <div class="flex justify-end">
+                                        <button type="submit" class="bg-blue-600 text-white px-6 py-2 rounded-md hover:bg-blue-700 transition">
+                                            <i class="fas fa-paper-plane mr-2"></i> Send Notification
+                                        </button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                        
+                        <!-- Email Templates -->
+                        <div class="lg:col-span-1">
+                            <div class="bg-white rounded-lg shadow-md p-6 mb-6">
+                                <h2 class="text-xl font-bold mb-4">Email Templates</h2>
+                                
+                                <div class="space-y-4">
+                                    <div class="border border-gray-200 rounded-md p-3 cursor-pointer hover:bg-gray-50 template-item" data-template="reminder">
+                                        <h3 class="font-bold text-gray-800">Clock Reminder</h3>
+                                        <p class="text-gray-600 text-sm">Reminder to clock in/out for employees</p>
+                                    </div>
+                                    
+                                    <div class="border border-gray-200 rounded-md p-3 cursor-pointer hover:bg-gray-50 template-item" data-template="announcement">
+                                        <h3 class="font-bold text-gray-800">General Announcement</h3>
+                                        <p class="text-gray-600 text-sm">Company-wide announcement template</p>
+                                    </div>
+                                    
+                                    <div class="border border-gray-200 rounded-md p-3 cursor-pointer hover:bg-gray-50 template-item" data-template="schedule">
+                                        <h3 class="font-bold text-gray-800">Schedule Update</h3>
+                                        <p class="text-gray-600 text-sm">Notify about schedule changes</p>
+                                    </div>
+                                    
+                                    <div class="border border-gray-200 rounded-md p-3 cursor-pointer hover:bg-gray-50 template-item" data-template="custom">
+                                        <h3 class="font-bold text-gray-800">Custom Message</h3>
+                                        <p class="text-gray-600 text-sm">Create your own message</p>
+                                    </div>
+                                </div>
+                                
+                                <div class="mt-6">
+                                    <h3 class="font-bold text-gray-800 mb-2">Recent Emails</h3>
+                                    <div id="recentEmailsList" class="space-y-2">
+                                        <!-- Will be populated by JavaScript -->
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="tab-content hidden" id="analytics">
+                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                        <!-- Attendance Chart -->
+                        <div class="bg-white rounded-lg shadow-md p-6 mb-6">
+                            <h2 class="text-xl font-bold mb-4">Weekly Attendance</h2>
+                            <canvas id="attendanceChart" height="300"></canvas>
+                        </div>
+                        
+                        <!-- Hours Worked Chart -->
+                        <div class="bg-white rounded-lg shadow-md p-6 mb-6">
+                            <h2 class="text-xl font-bold mb-4">Hours Worked</h2>
+                            <canvas id="hoursWorkedChart" height="300"></canvas
+                            </div>
+                        </div>
+                        
+                        <!-- Employee Activity Table -->
+                        <div class="lg:col-span-2">
+                            <div class="bg-white rounded-lg shadow-md p-6 mb-6">
+                                <div class="flex justify-between items-center mb-4">
+                                    <h2 class="text-xl font-bold">Employee Activity Analytics</h2>
+                                    <div class="flex">
+                                        <select id="analyticsTimeRange" class="border border-gray-300 rounded-md px-4 py-2 mr-2 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                                            <option value="week">Last 7 Days</option>
+                                            <option value="month">Last 30 Days</option>
+                                            <option value="quarter">Last 90 Days</option>
+                                            <option value="year">Last 12 Months</option>
+                                        </select>
+                                        <button id="exportAnalyticsBtn" class="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 transition">
+                                            <i class="fas fa-download mr-2"></i> Export
+                                        </button>
+                                    </div>
+                                </div>
+                                
+                                <div class="overflow-x-auto">
+                                    <table class="min-w-full bg-white">
+                                        <thead>
+                                            <tr class="bg-gray-100 text-gray-600 text-left">
+                                                <th class="py-3 px-4 font-semibold">Employee</th>
+                                                <th class="py-3 px-4 font-semibold">Avg. Hours/Day</th>
+                                                <th class="py-3 px-4 font-semibold">Total Hours</th>
+                                                <th class="py-3 px-4 font-semibold">Late Arrivals</th>
+                                                <th class="py-3 px-4 font-semibold">Early Departures</th>
+                                                <th class="py-3 px-4 font-semibold">Absences</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="analyticsTable">
+                                            <!-- Will be populated by JavaScript -->
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Add Employee Modal -->
+    <div class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden" 
+         id="addEmployeeModal" 
+         role="dialog" 
+         aria-labelledby="modalTitle" 
+         aria-modal="true">
+        <div class="bg-white rounded-lg shadow-xl w-full max-w-md" role="document">
+            <div class="p-6">
+                <div class="flex justify-between items-center mb-4">
+                    <h2 id="modalTitle" class="text-xl font-bold">Add New Employee</h2>
+                    <button id="closeAddEmployeeModal" 
+                            class="text-gray-500 hover:text-gray-700" 
+                            aria-label="Close modal">
+                        <i class="fas fa-times" aria-hidden="true"></i>
+                    </button>
+                </div>
+                <!-- ... rest of modal content ... -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+     <script src="search.js"></script>
+    <script>
+       document.addEventListener('DOMContentLoaded', function() {
+    // Function to update all admin dashboard stats
+    function updateAdminStats() {
+        // Get all users
+        const users = getUsers();
+        document.getElementById('totalEmployees').textContent = users.length;
+
+        // Get all clock records
+        const clockRecords = JSON.parse(localStorage.getItem('clockRecords')) || [];
+        const today = new Date().toLocaleDateString('en-US');
+
+        // Count today's clock-ins
+        const todayClockIns = clockRecords.filter(record => 
+            new Date(record.date).toLocaleDateString('en-US') === today
+        ).length;
+        document.getElementById('todayClockIns').textContent = todayClockIns;
+
+        // Count currently active (clocked in but not out)
+        const activeEmployees = clockRecords.filter(record => 
+            new Date(record.date).toLocaleDateString('en-US') === today && 
+            record.clockIn && 
+            !record.clockOut
+        ).length;
+        document.getElementById('activeEmployees').textContent = activeEmployees;
+
+        // Calculate absences (employees who haven't clocked in today)
+        const absentToday = users.length - todayClockIns;
+        document.getElementById('absentToday').textContent = absentToday;
+    }
+
+    // Update stats initially
+    updateAdminStats();
+
+    // Update stats every minute
+    setInterval(updateAdminStats, 60000);
+
+    // Listen for clock events from other pages
+    window.addEventListener('storage', function(e) {
+        if (e.key === 'clockRecords') {
+            updateAdminStats();
+        }
+    });
+
+    // Toggle mobile menu
+    document.getElementById('menuToggle').addEventListener('click', function() {
+        const mobileSidebar = document.getElementById('mobileSidebar');
+        mobileSidebar.classList.toggle('hidden');
+    });
+
+    // Tab switching functionality
+    const tabButtons = document.querySelectorAll('.tab-btn');
+    const tabContents = document.querySelectorAll('.tab-content');
+
+    tabButtons.forEach(button => {
+        button.addEventListener('click', () => {
+            const tabId = button.getAttribute('data-tab');
+
+            // Update active tab button
+            tabButtons.forEach(btn => {
+                btn.classList.remove('border-blue-500', 'text-blue-600');
+                btn.classList.add('border-transparent', 'text-gray-500');
+            });
+            button.classList.add('border-blue-500', 'text-blue-600');
+            button.classList.remove('border-transparent', 'text-gray-500');
+            
+            // Show selected tab content
+            tabContents.forEach(content => { 
+                content.classList.add('hidden');
+            });
+            document.getElementById(tabId).classList.remove('hidden');
+        });
+    });
+
+    // Update current time and date
+    function updateClock() {
+        const now = new Date();
+        const dateOptions = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+        const timeOptions = { hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: true };
+        
+        document.getElementById('currentDate').textContent = now.toLocaleDateString('en-US', dateOptions);
+        document.getElementById('clock').textContent = now.toLocaleTimeString('en-US', timeOptions);
+    }
+
+    // Update clock every second
+    updateClock();
+    setInterval(updateClock, 1000);
+
+    // Initialize tables
+    populateLiveActivity();
+    populateEmployeeDirectory();
+});
+
+// Get users from localStorage (your actual registered users)
+function getUsers() {
+    return JSON.parse(localStorage.getItem('users')) || [];
+}
+
+// Save users back to localStorage
+function saveUsers(users) {
+    localStorage.setItem('users', JSON.stringify(users));
+}
+
+// Convert users to employee format for display
+function convertUsersToEmployees(users) {
+    return users.map((user, index) => ({
+        id: index + 1,
+        name: user.name,
+        employeeId: user.employeeId || `EMP${String(index + 1).padStart(3, '0')}`,
+        position: user.position || 'Employee',
+        email: user.email || `${user.name.toLowerCase().replace(/\s+/g, '')}@company.com`,
+        status: user.status || 'inactive',
+        clockIn: user.clockIn || 'Not clocked in',
+        duration: user.duration || '0h 0m',
+        password: user.password // Keep the hashed password
+    }));
+}
+
+// Get current employees (converted from users)
+function getEmployees() {
+    const users = getUsers();
+    return convertUsersToEmployees(users);
+}
+
+function populateLiveActivity() {
+    const users = getUsers();
+    const clockRecords = JSON.parse(localStorage.getItem('clockRecords')) || [];
+    const today = new Date().toLocaleDateString('en-US');
+    const tableBody = document.getElementById('liveActivityTable');
+    tableBody.innerHTML = '';
+    
+    users.forEach((user, index) => {
+        // Find today's clock records for this user
+        const userTodayRecords = clockRecords.filter(record => 
+            record.employeeId === (user.employeeId || `EMP${String(index + 1).padStart(3, '0')}`) &&
+            new Date(record.date).toLocaleDateString('en-US') === today
+        );
+        
+        // Find active session (clocked in but not out)
+        const activeSession = userTodayRecords.find(record => 
+            record.clockIn && !record.clockOut
+        );
+        
+        // Determine current status
+        let status = 'inactive';
+        let clockInTime = 'Not clocked in';
+        let duration = '0h 0m';
+        
+        if (activeSession) {
+            status = 'active';
+            const clockInDate = new Date(activeSession.clockIn);
+            clockInTime = formatTime(clockInDate);
+            duration = calculateDuration(activeSession.clockIn, new Date());
+        } else {
+            // Check if user clocked out today
+            const lastCompletedSession = userTodayRecords
+                .filter(record => record.clockIn && record.clockOut)
+                .sort((a, b) => new Date(b.clockOut) - new Date(a.clockOut))[0];
+            
+            if (lastCompletedSession) {
+                const clockOutDate = new Date(lastCompletedSession.clockOut);
+                clockInTime = `Clocked out at ${formatTime(clockOutDate)}`;
+                duration = calculateDuration(lastCompletedSession.clockIn, lastCompletedSession.clockOut);
+            }
+        }
+        
+        const row = document.createElement('tr');
+        row.className = 'border-b border-gray-200 hover:bg-gray-50';
+        
+        let statusBadge = '';
+        if (status === 'active') {
+            statusBadge = '<span class="bg-green-100 text-green-800 text-xs px-2 py-1 rounded-full">Active</span>';
+        } else {
+            statusBadge = '<span class="bg-gray-100 text-gray-800 text-xs px-2 py-1 rounded-full">Inactive</span>';
+        }
+        
+        row.innerHTML = `
+            <td class="py-3 px-4">${user.name}</td>
+            <td class="py-3 px-4">${user.employeeId || `EMP${String(index + 1).padStart(3, '0')}`}</td>
+            <td class="py-3 px-4">${user.position || 'Not Specified'}</td>
+            <td class="py-3 px-4">${statusBadge}</td>
+            <td class="py-3 px-4">${clockInTime}</td>
+            <td class="py-3 px-4">${duration}</td>
+            <td class="py-3 px-4">
+              
+            </td>
+        `;
+        
+        tableBody.appendChild(row);
+    });
+}
+
+function formatTime(date) {
+    if (!date) return '--:-- --';
+    
+    const hours = date.getHours();
+    const minutes = date.getMinutes();
+    const ampm = hours >= 12 ? 'PM' : 'AM';
+    const formattedHours = hours % 12 || 12;
+    const formattedMinutes = minutes < 10 ? '0' + minutes : minutes;
+    
+    return `${formattedHours}:${formattedMinutes} ${ampm}`;
+}
+
+function calculateDuration(startTime, endTime) {
+    if (!startTime || !endTime) return '0h 0m';
+    
+    const start = new Date(startTime);
+    const end = new Date(endTime);
+    const diffMs = end - start;
+    
+    const hours = Math.floor(diffMs / (1000 * 60 * 60));
+    const minutes = Math.floor((diffMs % (1000 * 60 * 60)) / (1000 * 60));
+    
+    return `${hours}h ${minutes}m`; 
+}
+
+// Populate employee directory
+function populateEmployeeDirectory() {
+    const employees = getEmployees();
+    const tableBody = document.getElementById('employeeDirectoryTable');
+    tableBody.innerHTML = '';
+    
+    employees.forEach(employee => {
+        const row = document.createElement('tr');
+        row.className = 'border-b border-gray-200 hover:bg-gray-50';
+        
+        row.innerHTML = `
+            <td class="py-3 px-4">${employee.name}</td>
+            <td class="py-3 px-4">${employee.employeeId}</td>
+            <td class="py-3 px-4">${employee.position}</td>
+            <td class="py-3 px-4">${employee.email}</td>
+            <td class="py-3 px-4">
+                <button class="text-blue-600 hover:text-blue-800 mr-2" onclick="editEmployee(${employee.id})">
+                    <i class="fas fa-edit"></i>
+                </button>
+                <button class="text-red-600 hover:text-red-800" onclick="deleteEmployee(${employee.id})">
+                    <i class="fas fa-trash-alt"></i>
+                </button>
+            </td>
+        `;
+        
+        tableBody.appendChild(row);
+    });
+}
+
+// Edit employee function - FIXED VERSION
+function editEmployee(id) {
+    const users = getUsers();
+    const userIndex = id - 1; // Convert to array index
+    const user = users[userIndex];
+    
+    if (!user) return;
+    
+    // Store original email for reference
+    const originalEmail = user.email;
+    
+    document.getElementById('editEmployeeId').value = id;
+    document.getElementById('editName').value = user.name;
+    document.getElementById('editEmployeeID').value = user.employeeId || `EMP${String(id).padStart(3, '0')}`;
+    document.getElementById('editPosition').value = user.position || 'Employee';
+    document.getElementById('editEmail').value = user.email || `${user.name.toLowerCase().replace(/\s+/g, '')}@company.com`;
+    
+    // Store original email as a data attribute for reference
+    document.getElementById('editEmail').setAttribute('data-original-email', originalEmail);
+    
+    document.getElementById('employeeEditForm').classList.remove('hidden');
+    document.querySelector('#employeeEditPanel p').classList.add('hidden');
+    
+    // Scroll to the edit panel
+    document.getElementById('employeeEditPanel').scrollIntoView({ behavior: 'smooth' });
+}
+
+// Updated save function to handle email changes properly
+/*function saveEmployeeChanges() {
+    const id = parseInt(document.getElementById('editEmployeeId').value);
+    const name = document.getElementById('editName').value.trim();
+    const employeeId = document.getElementById('editEmployeeID').value.trim();
+    const position = document.getElementById('editPosition').value.trim();
+    const newEmail = document.getElementById('editEmail').value.trim();
+    const originalEmail = document.getElementById('editEmail').getAttribute('data-original-email');
+    
+    if (!name || !employeeId || !newEmail) {
+        alert('Please fill in all required fields.');
+        return;
+    }
+    
+    const users = getUsers();
+    const userIndex = id - 1;
+    
+    if (userIndex < 0 || userIndex >= users.length) {
+        alert('Employee not found.');
+        return;
+    }
+    
+    // Check if new email is already used by another user
+    const emailExists = users.some((user, index) => 
+        index !== userIndex && user.email === newEmail
+    );
+    
+    if (emailExists) {
+        alert('This email is already used by another employee.');
+        return;
+    }
+    
+    // Update user information
+    users[userIndex] = {
+        ...users[userIndex],
+        name: name,
+        employeeId: employeeId,
+        position: position,
+        email: newEmail
+    };
+    
+    // If email changed, update clock records to maintain consistency
+    if (originalEmail !== newEmail) {
+        updateClockRecordsEmail(originalEmail, newEmail, employeeId);
+    }
+    
+    // Save updated users
+    saveUsers(users);
+    
+    // Update the tables
+    populateLiveActivity();
+    populateEmployeeDirectory();
+    
+    // Hide the edit form
+    document.getElementById('employeeEditForm').classList.add('hidden');
+    document.querySelector('#employeeEditPanel p').classList.remove('hidden');
+    
+    alert('Employee information updated successfully!');
+}*/
+
+
+
+function saveEmployeeChanges() {
+    const id = parseInt(document.getElementById('editEmployeeId').value);
+    const name = document.getElementById('editName').value.trim();
+    const employeeId = document.getElementById('editEmployeeID').value.trim();
+    const position = document.getElementById('editPosition').value.trim();
+    const newEmail = document.getElementById('editEmail').value.trim();
+    const originalEmail = document.getElementById('editEmail').getAttribute('data-original-email');
+    
+    if (!name || !employeeId || !newEmail) {
+        alert('Please fill in all required fields.');
+        return;
+    }
+    
+    const users = getUsers();
+    const userIndex = id - 1;
+    
+    if (userIndex < 0 || userIndex >= users.length) {
+        alert('Employee not found.');
+        return;
+    }
+    
+    // Check if new email is already used by another user
+    const emailExists = users.some((user, index) => 
+        index !== userIndex && user.email === newEmail
+    );
+    
+    if (emailExists) {
+        alert('This email is already used by another employee.');
+        return;
+    }
+    
+    // Update user information while preserving the password
+    users[userIndex] = {
+        ...users[userIndex], // This spreads all existing properties
+        name: name,
+        employeeId: employeeId,
+        position: position,
+        email: newEmail
+        // Password is preserved because of the spread operator above
+    };
+    
+    // If email changed, update clock records to maintain consistency
+    if (originalEmail !== newEmail) {
+        updateClockRecordsEmail(originalEmail, newEmail, employeeId);
+    }
+    
+    // Save updated users
+    saveUsers(users);
+    
+    // Update the tables
+    populateLiveActivity();
+    populateEmployeeDirectory();
+    
+    // Hide the edit form
+    document.getElementById('employeeEditForm').classList.add('hidden');
+    document.querySelector('#employeeEditPanel p').classList.remove('hidden');
+    
+    alert('Employee information updated successfully!');
+}
+
+// Function to update email in clock records when email is changed
+function updateClockRecordsEmail(oldEmail, newEmail, employeeId) {
+    const clockRecords = JSON.parse(localStorage.getItem('clockRecords')) || [];
+    
+    const updatedRecords = clockRecords.map(record => {
+        if (record.employeeId === employeeId || record.email === oldEmail) {
+            return {
+                ...record,
+                email: newEmail
+            };
+        }
+        return record;
+    });
+    
+    localStorage.setItem('clockRecords', JSON.stringify(updatedRecords));
+}
+
+// Cancel edit function
+function cancelEdit() {
+    document.getElementById('employeeEditForm').classList.add('hidden');
+    document.querySelector('#employeeEditPanel p').classList.remove('hidden');
+}
+
+// Delete employee function
+function deleteEmployee(id) {
+    const users = getUsers();
+    const userIndex = id - 1;
+    const user = users[userIndex];
+    
+    if (!user) return;
+
+    if (confirm(`Are you sure you want to delete ${user.name}?`)) {
+        // Remove user from users array
+        const updatedUsers = users.filter((_, index) => index !== userIndex);
+        saveUsers(updatedUsers);
+        
+        // Remove related clock records
+        const clockRecords = JSON.parse(localStorage.getItem('clockRecords')) || [];
+        const employeeId = user.employeeId || `EMP${String(id).padStart(3, '0')}`;
+        const updatedClockRecords = clockRecords.filter(record => 
+            record.employeeId !== employeeId && record.email !== user.email
+        );
+        localStorage.setItem('clockRecords', JSON.stringify(updatedClockRecords));
+        
+        // Refresh tables
+        populateLiveActivity();
+        populateEmployeeDirectory();
+        updateAdminStats();
+        
+        alert(`${user.name} has been deleted successfully.`);
+    }
+}
+
+
+// email form functionality
+
+
+// Email Form Functionality
+document.addEventListener('DOMContentLoaded', function() {
+    // Initialize email form functionality
+    initializeEmailForm();
+});
+
+function initializeEmailForm() {
+    const emailForm = document.getElementById('emailForm');
+    const recipientSelect = document.getElementById('emailRecipient');
+    const customRecipientsDiv = document.getElementById('customRecipientsDiv');
+    const customRecipientsList = document.getElementById('customRecipientsList');
+    const emailTemplate = document.getElementById('emailTemplate');
+    const emailContent = document.getElementById('emailContent');
+    
+    if (!emailForm) return; // Exit if email form doesn't exist on this page
+    
+    // Handle recipient selection change
+    recipientSelect.addEventListener('change', function() {
+        if (this.value === 'custom') {
+            customRecipientsDiv.classList.remove('hidden');
+            populateCustomRecipients();
+        } else {
+            customRecipientsDiv.classList.add('hidden');
+        }
+    });
+    
+    // Handle template selection
+    emailTemplate.addEventListener('change', function() {
+        updateEmailTemplate(this.value);
+    });
+    
+    // Handle form submission
+    emailForm.addEventListener('submit', function(e) {
+        e.preventDefault();
+        sendNotification();
+    });
+    
+    // Initialize with default template
+    updateEmailTemplate('custom');
+}
+
+// Get all users from localStorage
+function getAllUsers() {
+    return JSON.parse(localStorage.getItem('users')) || [];
+}
+
+// Get clock records to determine active/inactive status
+function getClockRecords() {
+    return JSON.parse(localStorage.getItem('clockRecords')) || [];
+}
+
+// Check if user is currently active (clocked in today)
+function isUserActive(employeeId) {
+    const records = getClockRecords();
+    const today = new Date().toLocaleDateString('en-US');
+    
+    // Find if user has an active session today (clocked in but not out)
+    return records.some(record => 
+        record.employeeId === employeeId && 
+        new Date(record.date).toLocaleDateString('en-US') === today &&
+        !record.clockOut
+    );
+}
+
+// Populate custom recipients list
+function populateCustomRecipients() {
+    const customRecipientsList = document.getElementById('customRecipientsList');
+    const users = getAllUsers();
+    
+    if (!customRecipientsList) return;
+    
+    customRecipientsList.innerHTML = '';
+    
+    if (users.length === 0) {
+        customRecipientsList.innerHTML = '<p class="text-gray-500 text-sm">No employees found</p>';
+        return;
+    }
+    
+    users.forEach(user => {
+        const isActive = isUserActive(user.employeeId);
+        const statusBadge = isActive ? 
+            '<span class="bg-green-100 text-green-800 px-2 py-1 rounded-full text-xs ml-2">Active</span>' :
+            '<span class="bg-gray-100 text-gray-800 px-2 py-1 rounded-full text-xs ml-2">Inactive</span>';
+        
+        const checkboxDiv = document.createElement('div');
+        checkboxDiv.className = 'flex items-center mb-2 p-2 hover:bg-gray-50 rounded';
+        checkboxDiv.innerHTML = `
+            <input type="checkbox" id="user_${user.employeeId}" value="${user.employeeId}" 
+                   class="mr-3 recipient-checkbox">
+            <label for="user_${user.employeeId}" class="flex-1 cursor-pointer">
+                <span class="font-medium">${user.name}</span>
+                <span class="text-gray-600 text-sm"> (${user.employeeId})</span>
+                <span class="text-gray-500 text-sm"> - ${user.role || 'Employee'}</span>
+                ${statusBadge}
+            </label>
+        `;
+        
+        customRecipientsList.appendChild(checkboxDiv);
+    });
+    
+    // Add "Select All" option
+    const selectAllDiv = document.createElement('div');
+    selectAllDiv.className = 'border-t pt-2 mt-2';
+    selectAllDiv.innerHTML = `
+        <div class="flex items-center">
+            <input type="checkbox" id="selectAll" class="mr-3">
+            <label for="selectAll" class="font-medium text-blue-600 cursor-pointer">Select All</label>
+        </div>
+    `;
+    
+    customRecipientsList.appendChild(selectAllDiv);
+    
+    // Handle "Select All" functionality
+    const selectAllCheckbox = document.getElementById('selectAll');
+    const recipientCheckboxes = document.querySelectorAll('.recipient-checkbox');
+    
+    selectAllCheckbox.addEventListener('change', function() {
+        recipientCheckboxes.forEach(checkbox => {
+            checkbox.checked = this.checked;
+        });
+    });
+    
+    // Handle individual checkbox changes
+    recipientCheckboxes.forEach(checkbox => {
+        checkbox.addEventListener('change', function() {
+            const allChecked = Array.from(recipientCheckboxes).every(cb => cb.checked);
+            const someChecked = Array.from(recipientCheckboxes).some(cb => cb.checked);
+            
+            selectAllCheckbox.checked = allChecked;
+            selectAllCheckbox.indeterminate = someChecked && !allChecked;
+        });
+    });
+}
+
+// Update email template content
+function updateEmailTemplate(templateType) {
+    const emailContent = document.getElementById('emailContent');
+    const emailSubject = document.getElementById('emailSubject');
+    
+    if (!emailContent || !emailSubject) return;
+    
+    const templates = {
+        custom: {
+            subject: '',
+            content: ''
+        },
+        reminder: {
+            subject: 'Clock In/Out Reminder',
+            content: `Dear Team,
+
+This is a friendly reminder about our time tracking system:
+
+• Please remember to clock in when you arrive at work
+• Don't forget to clock out when you leave
+• Accurate time tracking helps us maintain proper records
+
+If you have any questions about the time tracking system, please don't hesitate to reach out.
+
+Best regards,
+Management`
+        },
+        announcement: {
+            subject: 'Important Announcement',
+            content: `Dear Team,
+
+We have an important announcement to share with you.
+
+[Please add your announcement details here]
+
+Thank you for your attention.
+
+Best regards,
+Management`
+        },
+        schedule: {
+            subject: 'Schedule Update',
+            content: `Dear Team,
+
+We have updates regarding work schedules:
+
+[Please add schedule details here]
+
+Please review the information carefully and reach out if you have any questions.
+
+Best regards,
+Management`
+        }
+    };
+    
+    const template = templates[templateType] || templates.custom;
+    emailSubject.value = template.subject;
+    emailContent.value = template.content;
+}
+
+// Get recipients based on selection
+function getSelectedRecipients() {
+    const recipientType = document.getElementById('emailRecipient').value;
+    const users = getAllUsers();
+    
+    switch(recipientType) {
+        case 'all':
+            return users;
+            
+        case 'active':
+            return users.filter(user => isUserActive(user.employeeId));
+            
+        case 'inactive':
+            return users.filter(user => !isUserActive(user.employeeId));
+            
+        case 'custom':
+            const selectedIds = Array.from(document.querySelectorAll('.recipient-checkbox:checked'))
+                .map(checkbox => checkbox.value);
+            return users.filter(user => selectedIds.includes(user.employeeId));
+            
+        default:
+            return [];
+    }
+}
+
+// Send notification function
+function sendNotification() {
+    const subject = document.getElementById('emailSubject').value.trim();
+    const content = document.getElementById('emailContent').value.trim();
+    const recipients = getSelectedRecipients();
+    
+    // Validation
+    if (!subject) {
+        Swal.fire({
+            title: 'Error',
+            text: 'Please enter an email subject',
+            icon: 'error',
+            confirmButtonColor: '#1e40af'
+        });
+        return;
+    }
+    
+    if (!content) {
+        Swal.fire({
+            title: 'Error',
+            text: 'Please enter email content',
+            icon: 'error',
+            confirmButtonColor: '#1e40af'
+        });
+        return;
+    }
+    
+    if (recipients.length === 0) {
+        Swal.fire({
+            title: 'Error',
+            text: 'No recipients selected. Please select at least one employee.',
+            icon: 'error',
+            confirmButtonColor: '#1e40af'
+        });
+        return;
+    }
+    
+    // Show confirmation dialog
+    Swal.fire({
+        title: 'Send Notification?',
+        html: `
+            <div class="text-left">
+                <p><strong>Subject:</strong> ${subject}</p>
+                <p><strong>Recipients:</strong> ${recipients.length} employee(s)</p>
+                <div class="mt-2 max-h-32 overflow-y-auto bg-gray-50 p-2 rounded">
+                    ${recipients.map(user => `<div class="text-sm">• ${user.name} (${user.employeeId})</div>`).join('')}
+                </div>
+            </div>
+        `,
+        icon: 'question',
+        showCancelButton: true,
+        confirmButtonText: 'Send Notification',
+        cancelButtonText: 'Cancel',
+        confirmButtonColor: '#1e40af',
+        cancelButtonColor: '#6b7280'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            performSendNotification(subject, content, recipients);
+        }
+    });
+}
+
+// Perform the actual send notification (simulated)
+function performSendNotification(subject, content, recipients) {
+    // Show loading state
+    Swal.fire({
+        title: 'Sending Notifications...',
+        text: 'Please wait while we send the notifications.',
+        allowOutsideClick: false,
+        allowEscapeKey: false,
+        showConfirmButton: false,
+        didOpen: () => {
+            Swal.showLoading();
+        }
+    });
+    
+    // Simulate email sending delay
+    setTimeout(() => {
+        // Store notification in localStorage (for admin tracking)
+        const notifications = JSON.parse(localStorage.getItem('sentNotifications')) || [];
+        const newNotification = {
+            id: Date.now().toString(),
+            subject: subject,
+            content: content,
+            recipients: recipients.map(user => ({
+                name: user.name,
+                employeeId: user.employeeId,
+                role: user.role
+            })),
+            sentDate: new Date().toISOString(),
+            sentBy: sessionStorage.getItem('loggedInUser') || 'Admin'
+        };
+        
+        notifications.push(newNotification);
+        localStorage.setItem('sentNotifications', JSON.stringify(notifications));
+        
+        // In a real application, you would make an API call here to send actual emails
+        // For now, we'll simulate success
+        
+        Swal.fire({
+            title: 'Notifications Sent!',
+            text: `Successfully sent notifications to ${recipients.length} employee(s).`,
+            icon: 'success',
+            confirmButtonColor: '#1e40af'
+        }).then(() => {
+            // Clear the form
+            document.getElementById('emailForm').reset();
+            document.getElementById('customRecipientsDiv').classList.add('hidden');
+            updateEmailTemplate('custom');
+        });
+        
+    }, 2000); // 2 second delay to simulate sending
+}
+
+// Optional: Function to view sent notifications (you can add this to admin panel)
+function getSentNotifications() {
+    return JSON.parse(localStorage.getItem('sentNotifications')) || [];
+}
+
+// Export functions for use in other parts of the application
+window.emailFormFunctions = {
+    initializeEmailForm,
+    getSentNotifications,
+    getSelectedRecipients
+};
+    </script>
+</body>
+</html>
